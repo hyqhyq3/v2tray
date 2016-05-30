@@ -2,4 +2,12 @@
 # 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
 ################################################################################
 
-/v2tray/x64/Debug
+x64
+*.user
+*.pdb
+*.db
+*.opendb
+Debug
+Release
+*.suo
+ipch
