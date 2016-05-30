@@ -1,8 +1,8 @@
-﻿// v2ray-tray.cpp : 定义应用程序的入口点。
+﻿// v2tray.cpp : 定义应用程序的入口点。
 //
 
 #include "stdafx.h"
-#include "v2ray-tray.h"
+#include "v2tray.h"
 #include "v2ray.h"
 #include <shellapi.h>
 #include <stdio.h>
