@@ -48,15 +48,18 @@ void V2Ray::editConfig()
 void V2Ray::setProxy()
 {
 	INTERNET_PER_CONN_OPTION_LIST    List;
-	INTERNET_PER_CONN_OPTION         Option[1];
+	INTERNET_PER_CONN_OPTION         Option[2];
 	unsigned long                    nSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
 
 	Option[0].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
 	Option[0].Value.pszValue = _T("http://localhost:5000");
 
+	Option[1].dwOption = INTERNET_PER_CONN_FLAGS;
+	Option[1].Value.dwValue = PROXY_TYPE_PROXY;
+
 	List.dwSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
 	List.pszConnection = NULL;
-	List.dwOptionCount = 1;
+	List.dwOptionCount = 2;
 	List.dwOptionError = 0;
 	List.pOptions = Option;
 
@@ -67,15 +70,18 @@ void V2Ray::setProxy()
 void V2Ray::setNoProxy()
 {
 	INTERNET_PER_CONN_OPTION_LIST    List;
-	INTERNET_PER_CONN_OPTION         Option[1];
+	INTERNET_PER_CONN_OPTION         Option[2];
 	unsigned long                    nSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
 
 	Option[0].dwOption = INTERNET_PER_CONN_PROXY_SERVER;
 	Option[0].Value.pszValue = NULL;
 
+	Option[1].dwOption = INTERNET_PER_CONN_FLAGS;
+	Option[1].Value.dwValue = PROXY_TYPE_DIRECT;
+
 	List.dwSize = sizeof(INTERNET_PER_CONN_OPTION_LIST);
 	List.pszConnection = NULL;
-	List.dwOptionCount = 1;
+	List.dwOptionCount = 2;
 	List.dwOptionError = 0;
 	List.pOptions = Option;
 
