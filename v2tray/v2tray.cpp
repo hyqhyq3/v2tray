@@ -287,6 +287,7 @@ void showConsole()
 	{
 		HWND hWnd = GetConsoleWindow();
 		ShowWindow(hWnd, IsWindowVisible(hWnd) ? SW_HIDE : SW_SHOW);
+		SetForegroundWindow(hWnd);
 	}
 }
 
