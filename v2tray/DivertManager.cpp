@@ -10,7 +10,7 @@
 
 DivertManager::DivertManager()
 {
-	proxyPort_ = htons(4411);
+	proxyPort_ = htons(4000);
 }
 
 DivertManager::~DivertManager()
