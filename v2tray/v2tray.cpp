@@ -7,9 +7,13 @@
 #include <shellapi.h>
 #include <stdio.h>
 #include "WinHttp.h"
+#include "DivertManager.h"
+#include "TcpConnectionTable.h"
 
 #pragma comment(lib, "winhttp.lib")
 #pragma comment(lib, "wininet.lib")
+#pragma comment(lib, "wsock32.lib")
+#pragma comment(lib, "iphlpapi.lib")
 
 #define MAX_LOADSTRING 100
 #define WM_ICON WM_USER + 1
@@ -20,6 +24,7 @@
 #define MENU_NOPROXY WM_USER + 6
 #define MENU_SHOWCONSOLE WM_USER + 7
 #define MENU_RUNATSTARTUP WM_USER + 8
+#define MENU_DIVERT	WM_USER + 9
 
 // 全局变量: 
 HINSTANCE hInst;                                // 当前实例
@@ -29,6 +34,7 @@ HANDLE m_hStartEvent;
 
 NOTIFYICONDATA nid{};
 V2Ray v2ray;
+DivertManager divertMgr;
 
 
 // 此代码模块中包含的函数的前向声明: 
@@ -117,9 +123,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    wcscpy_s(nid.szTip, _T("v2ray"));
    nid.uVersion = NOTIFYICON_VERSION_4;
    nid.uCallbackMessage = WM_ICON;
-   Shell_NotifyIcon(NIM_ADD, &nid);
+   //Shell_NotifyIcon(NIM_ADD, &nid);
 
    v2ray.init(hWnd, "v2ray.ini");
+
+   divertMgr.start();
 
    return TRUE;
 }
@@ -256,6 +264,14 @@ void popMenu(HINSTANCE hInst, HWND hWnd)
 			InsertMenu(hMenu, -1, MF_BYPOSITION, MENU_RUNATSTARTUP, _T("开机时启动"));
 		}
 		InsertMenu(hMenu, -1, MF_BYPOSITION, MENU_SHOWCONSOLE, _T("显示控制台"));
+		if (divertMgr.isEnabled())
+		{
+			InsertMenu(hMenu, -1, MF_BYPOSITION | MF_CHECKED, MENU_DIVERT, _T("启用透明代理"));
+		}
+		else
+		{
+			InsertMenu(hMenu, -1, MF_BYPOSITION , MENU_DIVERT, _T("启用透明代理"));
+		}
 		InsertMenu(hMenu, -1, MF_BYPOSITION, MENU_EXIT, _T("退出"));
 
 		POINT pt;
@@ -333,6 +349,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					RegisterMyProgramForStartup(_T("v2tray"), szPathToExe, NULL, TRUE);
 				}
 				break;
+			}
+			case MENU_DIVERT:
+			{
+				if (divertMgr.isEnabled())
+				{
+					divertMgr.stop();
+				}
+				else
+				{
+					divertMgr.start();
+				}
 			}
 			case MENU_NOPROXY:
 			{
