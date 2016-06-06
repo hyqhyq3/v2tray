@@ -41,5 +41,16 @@ private:
 	uint32_t proxyPort_;
 	uint32_t proxyAddr_;
 	TcpConnectionTable connTable_;
+	typedef std::pair<uint32_t, uint32_t> Addr;
+	struct Conn {
+		Addr local;
+		Addr remote;
+		enum {
+			NOT_CONNECTED,
+			ESTABLISHED,
+			TIME_WAIT,
+		} state = NOT_CONNECTED;
+	};
+	std::map<Addr, Conn> srcDstMap_;
 };
 
