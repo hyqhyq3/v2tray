@@ -9,6 +9,8 @@
 #include "WinHttp.h"
 #include "DivertManager.h"
 #include "TcpConnectionTable.h"
+#include "RelayServer.h"
+#include "winsock2.h"
 
 #pragma comment(lib, "winhttp.lib")
 #pragma comment(lib, "wininet.lib")
@@ -70,6 +72,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     }
 
+	WORD wsaReq = MAKEWORD(2,2);
+	WSAData wsa;
+	WSAStartup(wsaReq, &wsa);
+	RelayServer server;
+	std::thread(std::bind(&RelayServer::start, std::ref(server))).detach();
+
     HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_V2RAYTRAY));
 
     MSG msg;
@@ -83,6 +91,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             DispatchMessage(&msg);
         }
     }
+	server.stop();
 
     return (int) msg.wParam;
 }
